@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Add new event</title>
+    <link type="text/css" href="./public/css/main.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <script src="./public/js/navbar.js"></script>
+    <script>
+
+        var actors_list = [];
+        var tickets_classes = {};
+        var tickets_sold = {};
+
+        function addActor() {
+            var name = document.getElementsByClassName("actor")[0].value;
+            var list = document.getElementsByClassName("actors_list").value += name + ", ";
+            actors_list.push(name);
+            document.getElementsByClassName("actor")[0].value = "";
+            console.log(actors_list);
+        }
+
+        function clearActors() {
+            actors_list = [];
+            document.getElementsByClassName("actors_list")[0].value = "";
+        }
+
+        function addClass() {
+
+            var type = document.getElementsByClassName("ticket_class")[0].value;
+            var number = parseInt(document.getElementsByClassName("ticket_num")[0].value);
+            var price = parseInt(document.getElementsByClassName("ticket_price")[0].value);
+
+            tickets_classes[type] = {
+                available: number,
+                price: price
+            }
+
+            tickets_sold[type] = 0;
+
+            document.getElementsByClassName("ticket_class")[0].value = "";
+            document.getElementsByClassName("ticket_num")[0].value = "";
+            document.getElementsByClassName("ticket_price")[0].value = "";
+            document.getElementsByClassName("tickets_classes")[0].value = JSON.stringify(tickets_classes);
+            document.getElementsByClassName("tickets_sold")[0].value = JSON.stringify(tickets_sold);
+            console.log(tickets_classes);
+
+        }
+
+        function clearClasses() {
+            tickets_classes = {};
+            tickets_sold = {};
+            document.getElementsByClassName("tickets_classes")[0].value = "";
+            document.getElementsByClassName("tickets_sold")[0].value = "";
+        }
+
+    </script>
+</head>
+
+<body>
+
+    <div id="main">
+        <span style="font-size:30px;cursor:pointer" id="menu_button" onclick="openNav()">&#9776; Menu</span>
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="event_form">New event</a>
+            <a href="events_list">Event list</a>
+            <a href="logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card border-0 shadow rounded-3 my-5">
+                    <div class="card-body p-4 p-sm-5">
+                        <h5 class="card-title text-center mb-5 fw-light fs-5">Add a new event</h5>
+                        <form method="POST" action="/register_event">
+
+                            <!-- Title -->
+                            <div class="form-floating mb-3">
+                                <input required type="text" class="form-control" name="title" id="floatingInput"
+                                    placeholder="Title">
+                                <label for="floatingInput">Title</label>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="form-floating mb-3">
+                                <textarea required placeholder="Description" name="description" class="form-control"
+                                    id="exampleFormControlTextarea1" rows="5"></textarea>
+                                <!-- <input required type="text" class="form-control" name="description" id="floatingInput"
+                                    placeholder="Description"> -->
+                                <label for="floatingInput">Description</label>
+                            </div>
+
+                            <!-- Actor -->
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control actor" id="floatingInput" placeholder="Actor">
+                                <input type="hidden" required name="actors_list" class="actors_list" value="">
+                                <label for="floatingInput">Actor</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <button type="button" class="btn btn-primary btn-login text-uppercase fw-bold"
+                                    onclick="addActor()">Add actor</button>
+                                <button type="button" class="btn btn-primary btn-login text-uppercase fw-bold"
+                                    onclick="clearActors()">Clear actors</button>
+                            </div>
+
+
+                            <!-- Date -->
+                            <div class="form-floating mb-3">
+                                <input required type="date" class="form-control" name="date" id="floatingInput"
+                                    placeholder="Date">
+                                <label for="floatingInput">Date</label>
+                            </div>
+
+                            <!-- Hour -->
+                            <div class="form-floating mb-3">
+                                <input required type="time" class="form-control" name="time" id="floatingInput"
+                                    placeholder="Hour">
+                                <label for="floatingInput">Hour</label>
+                            </div>
+
+                            <!-- Duration -->
+                            <div class="form-floating mb-3">
+                                <input required type="number" class="form-control" name="duration" id="floatingInput"
+                                    placeholder="Duration">
+                                <label for="floatingInput">Duration</label>
+                            </div>
+
+                            <!-- Nation -->
+                            <div class="form-floating mb-3">
+                                <input required type="text" class="form-control" name="nation" id="floatingInput"
+                                    placeholder="Nation">
+                                <label for="floatingInput">Nation</label>
+                            </div>
+
+                            <!-- City -->
+                            <div class="form-floating mb-3">
+                                <input required type="text" class="form-control" name="city" id="floatingInput"
+                                    placeholder="City">
+                                <label for="floatingInput">City</label>
+                            </div>
+
+
+                            <!-- Theatre -->
+                            <div class="form-floating mb-3">
+                                <input required type="text" class="form-control" name="Theatre" id="floatingInput"
+                                    placeholder="Theatre">
+                                <label for="floatingInput">Theatre</label>
+                            </div>
+
+                            <!-- Tickets -->
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control ticket_class" id="floatingInput"
+                                    placeholder="Tickets class">
+                                <label for="floatingInput">Tickets class</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control ticket_num" id="floatingInput"
+                                    placeholder="Tickets number">
+                                <label for="floatingInput">Tickets number</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control ticket_price" id="floatingInput"
+                                    placeholder="Tickets price">
+                                <label for="floatingInput">Tickets price</label>
+                            </div>
+                            <input type="hidden" class="tickets_classes" name="tickets_classes" value="">
+                            <input type="hidden" class="tickets_sold" name="tickets_sold" value="">
+                            <div class="form-floating mb-3">
+                                <button type="button" class="btn btn-primary btn-login text-uppercase fw-bold"
+                                    onclick="addClass()">Add class</button>
+                                <button type="button" class="btn btn-primary btn-login text-uppercase fw-bold"
+                                    onclick="clearClasses()">Clear classes</button>
+                            </div>
+
+                            <div class="d-grid">
+                                <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Add
+                                    event</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--<div id="main">
+        <form method="POST" action="/register_event">
+            Show tile: <input type="text" name="title" required /><br />
+            Description: <textarea name="description" required></textarea><br />
+            Actors: <input type="text" id="actor" /><br />
+            <input type="button" value="Add actor" onclick="addActor()" />
+            <input type="button" value="Clear actor" onclick="clearActors()" /><br />
+            <input type="hidden" value="" name="actors_list" id="actors_list" />
+            Date: <input required type="date" name="date" /><br />
+            Hour: <input required type="time" name="time" /><br />
+            Duration: <input required type="number" name="duration" /><br />
+            Nation: <input type="text" required name="nation" /><br />
+            City: <input type="text" required name="city" /><br />
+            Theatre name: <input type="text" required name="theatre" /><br />
+            Tickets<br />
+            Tickets class: <input type="text" id="ticket_class" /><br />
+            Tickets available: <input type="number" id="ticket_num" /><br />
+            Tickets price (€): <input type="number" id="ticket_price" /><br />
+            <input type="hidden" id="tickets_classes" name="tickets_classes" value="" />
+            <input type="hidden" id="tickets_sold" name="tickets_sold" value="" />
+            <input type="button" value="Add tickets class" onclick="addClass()" />
+            <input type="button" value="Clear selection" onclick="clearClasses" /> <br />
+            <input type="submit" value="Add event" />
+        </form>
+    </div>-->
+
+
+
+
+</body>
+
+</html>

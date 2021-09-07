@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Select</title>
+    <link type="text/css" href="./public/css/main.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+
+        #order,
+        #search_bar {
+            display: inline;
+            width: auto;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <script src="./public/js/navbar.js"></script>
+    <script>
+
+
+        var page = 1;
+        var keyword = ""
+        var order = "desc";
+
+        function requestJSON() {
+            let request = `http://localhost:8080/api?action=get&search=list&page=${page}&description=short&order=${order}`;
+            if (keyword != "") {
+                request += `&keyword=${keyword}`;
+            }
+            console.log(request);
+
+            $.getJSON(request).then((res) => {
+                //console.log(res);
+                document.getElementById("event_list").innerHTML = "";
+                for (show of res.shows_list) {
+                    create_event(show);
+                }
+                var events = document.getElementsByClassName("theatre_event");
+                for (e of events) {
+                    let id = e.id;
+                    e.addEventListener("click", () => {
+                        open_event_page(id.toString());
+                    });
+                }
+
+            });
+        }
+
+        function changeOrder() {
+            order = document.getElementById("order").value;
+            requestJSON();
+        }
+
+        function search() {
+            keyword = document.getElementById("search_bar").value;
+            requestJSON();
+
+        }
+
+        function prev() {
+            if (page > 1) {
+                page--;
+                document.getElementById("page").innerHTML = `Page: ${page}`;
+                requestJSON();
+            }
+        }
+
+        function next() {
+            page++;
+            document.getElementById("page").innerHTML = `Page: ${page}`;
+            requestJSON();
+        }
+
+        function open_event_page(id) {
+            window.location.href = `event_page?id=${id}`;
+        }
+
+        function create_event(show) {
+            let html_code = `<div class="theatre_event" id="${show.id}">`;
+            html_code += `<div class="title"> <b>${show.title}</b> </div>`;
+            html_code += `<div class="location"> <b>Location</b>: ${show.location} </div>`;
+            html_code += `<div class="theatre"> <b>Theatre</b>: ${show.theatre} </div>`;
+            html_code += `<div class="date"> <b>Date</b>: ${show.date} </div></div>`;
+            document.getElementById("event_list").innerHTML += html_code;
+        }
+
+    </script>
+</head>
+
+<body>
+    <div id="main">
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="event_form">New event</a>
+            <a href="events_list">Event list</a>
+            <a href="logout">Logout</a>
+        </div>
+        <span style="font-size:22px;cursor:pointer" id="menu_button" onclick="openNav()">&#9776; Menu</span>
+        <input class="form-control form-control-lg" type="text" id="search_bar" onkeyup="search()"
+            placeholder="Search by title" />
+        <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="order"
+            onchange="changeOrder()">
+            <option value="desc">Most recent</option>
+            <option value="asc">Less recent</option>
+        </select>
+        <!-- <input type="button" value="Search!" id="search_button" onclick="search()"/>-->
+        <div id="event_list"></div>
+
+        <div id="page_controller">
+            <!--<input type="button" id="prev" value="Prev" onclick="prev()" />-->
+            <button class="btn btn-light" type="button" id="prev" onclick="prev()">&laquo; Prev</button>
+            <span id="page"></span>
+            <button class="btn btn-light" type="button" id="next" onclick="next()">Next &raquo;</button>
+            <!--<input type="button" id="next" value="Next" onclick="next()" />-->
+        </div>
+    </div>
+    <script>
+        document.getElementById("page").innerHTML = `Page: ${page}`;
+        requestJSON();
+    </script>
+</body>
+
+</html>

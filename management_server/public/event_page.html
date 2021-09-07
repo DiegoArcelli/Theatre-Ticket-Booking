@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Event</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <meta charset="UTF-8">
+        <style>
+            body {
+                margin: 0 auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="event_info"></div>
+        <input type="button" value="Delete" onclick="delete_event()" />
+        <script>
+            var url = new URL(window.location.href);
+            var id = url.searchParams.get("id");
+            $.getJSON(`http://localhost:8080/api?action=get&search=exact&id=${id}&description=long`).then((res) => {
+                var html_code = "";
+                html_code += `<div id="event_title">${res.title}</div>`;
+                html_code += `<div id="event_descr">${res.description}</div>`;
+                html_code += `<div id="event_actors">${res.actors}</div>`;
+                html_code += `<div id="event_date">${res.date}</div>`;
+                html_code += `<div id="event_location">${res.location}</div>`;
+                html_code += `<div id="event_theatre">${res.theatre}</div>`;
+                html_code += `<div id="event_duration">Duration: ${res.duration} minutes</div>`;
+                document.getElementById("event_info").innerHTML = html_code;
+            });
+
+
+            function delete_event() {
+                window.location.href = `delete_event?id=${id}`;
+            }
+
+        </script>
+    </body>    
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Event</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="event_info"></div>
+    <input type="button" value="Buy ticket" onclick="buy()" />
+    <script>
+        var url = new URL(window.location.href);
+        var id = url.searchParams.get("id");
+        var tickets = {};
+
+        function changeClass() {
+            var class_name = document.getElementById("ticket_class").value;
+            console.log(class_name);
+            console.log(tickets);
+            document.getElementById("ticket_info").innerHTML = `<div>Tickets avaiable: ${tickets[class_name].available}</div>`;
+            document.getElementById("ticket_info").innerHTML += `<div>Tickets sold: ${tickets[class_name].sold}</div>`;
+            document.getElementById("ticket_info").innerHTML += `<div>Ticket price: ${tickets[class_name].price}</div>`;
+        }
+
+
+        function apiCall() {
+            $.getJSON(`http://localhost:8080/api?action=get&search=exact&id=${id}&description=long`).then((res) => {
+                var html_code = "";
+                html_code += `<div id="event_title">${res.title}</div>`;
+                html_code += `<div id="event_descr">${res.description}</div>`;
+                html_code += `<div id="event_actors">${res.actors}</div>`;
+                html_code += `<div id="event_date">${res.date}</div>`;
+                html_code += `<div id="event_location">${res.location}</div>`;
+                html_code += `<div id="event_theatre">${res.theatre}</div>`;
+                html_code += `<div id="event_duration">Duration: ${res.duration} minutes</div>`;
+                html_code += `<select id="ticket_class" onclick="changeClass()">`;
+                console.log(res.tickets_available);
+                for (class_name in res.tickets_available) {
+                    html_code += `<option value="${class_name}">${class_name}</option>`;
+                    tickets[class_name] = {};
+                    tickets[class_name].price = res.tickets_available[class_name].price;
+                    tickets[class_name].available = res.tickets_available[class_name].available;
+                    tickets[class_name].sold = res.sold[class_name];
+                }
+                html_code += `</select>`;
+                html_code += `<div id="ticket_info"></div>`;
+                console.log(tickets);
+                document.getElementById("event_info").innerHTML = html_code;
+                changeClass();
+            });
+        }
+
+        function buy() {
+            var id = url.searchParams.get("id");
+            var ticket_class = document.getElementById("ticket_class").value;
+            var request = `http://localhost:8080/api?action=buy&id=${id}&class=${ticket_class}`;
+            $.getJSON(request).then((req, res) => {
+                apiCall();
+            });
+        }
+
+
+        apiCall()
+
+
+    </script>
+</body>
+
+</html>
